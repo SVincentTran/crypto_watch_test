@@ -37,7 +37,7 @@ class Home extends React.Component {
             <div className="container">
                 <div className="col-xs-8 col-xs-offset-2 jumbotron text-center">
                     <h1> Crypto Watch Test Socket </h1>
-                    <a href="/login">SignIn</a>
+                    <a href="/login" className="btn btn-primary btn-lg">Sign In</a>
                 </div>
             </div>
         )
@@ -73,13 +73,20 @@ class LoggedIn extends React.Component {
                 <div className="col-lg-12">
                     <br />
                     <span className="pull-right">
-                        <a href="/logout">LogOut</a>
+                        <a href="/logout" className="btn btn-primary">Log Out</a>
                     </span>
                     <h2>
-                        This is the home page
+                        Crypto Dashboard
                     </h2>
-                    <div>
-                        Current Price of Ether: {this.state.ethPrice}
+                </div>
+                <div className="col-lg-12">
+                    <div className="container text-center">
+                        Current Price of Ethereum:
+                        <mark>
+                            <strong>
+                            {this.state.ethPrice}
+                            </strong>
+                        </mark>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "postgres"
-	password = "Khongcogi1"
+	password = "123456"
 	dbname   = "crypto_watch"
 )
 
