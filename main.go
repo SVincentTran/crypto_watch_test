@@ -25,6 +25,8 @@ func main() {
 		log.Fatalf("Failed to initialize the authenticator: %v", err)
 	}
 
+	db := helpers.InitDBConnection()
+
 	gob.Register(map[string]interface{}{})
 
 	router := gin.Default()
@@ -35,7 +37,7 @@ func main() {
 	router.Use(static.Serve("/", static.LocalFile("./views", true)))
 
 	router.GET("/login", routerHandlers.LoginHandler(auth))
-	router.GET("/auth-callback", routerHandlers.AuthenticationHandler(auth))
+	router.GET("/auth-callback", routerHandlers.AuthenticationHandler(auth, db))
 	router.GET("/logout", middleware.IsAuthenticated, routerHandlers.LogoutHandler(config))
 
 	api := router.Group("/api")

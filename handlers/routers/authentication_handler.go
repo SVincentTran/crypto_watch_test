@@ -1,16 +1,19 @@
 package routers
 
 import (
+	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"cryptowatch/authenticator"
+	"cryptowatch/helpers"
 )
 
 // Handler for our callback.
-func AuthenticationHandler(auth *authenticator.Authenticator) gin.HandlerFunc {
+func AuthenticationHandler(auth *authenticator.Authenticator, db *sql.DB) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		session := sessions.Default(ctx)
 		if ctx.Query("state") != session.Get("state") {
@@ -39,9 +42,23 @@ func AuthenticationHandler(auth *authenticator.Authenticator) gin.HandlerFunc {
 
 		session.Set("access_token", token.AccessToken)
 		session.Set("profile", profile)
+
 		if err := session.Save(); err != nil {
 			ctx.String(http.StatusInternalServerError, err.Error())
 			return
+		}
+
+		// Check for existed user in system
+		isExisted, err := helpers.GetUser(db, profile["nickname"].(string))
+		if err != nil {
+			log.Fatalf("Error while connecting to database %v", err)
+			return
+		}
+		if !isExisted {
+			err := helpers.AddNewUser(db, profile["nickname"].(string))
+			if err != nil {
+				return
+			}
 		}
 
 		// Redirect to logged in page.

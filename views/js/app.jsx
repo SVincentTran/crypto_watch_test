@@ -1,3 +1,5 @@
+let userId = ""
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -7,6 +9,7 @@ class App extends React.Component {
     serverRequest() {
         $.get("http://localhost:3000/api/login-status", res => {
             if (res.status == true) {
+                userId = res.user_id
                 this.setState({
                     "loggedIn": true,
                 })
@@ -50,10 +53,13 @@ class LoggedIn extends React.Component {
         this.state = {
             "ethPrice": 0,
             "updatedAt": 0,
+            "userId": "",
         };
     }
 
     componentDidMount() {
+        $.get("http://localhost:3000/api/login-")
+
         const watchUpdateInterval = setInterval(() => {
             $.get("http://localhost:3000/api/watch", res => {
                 if ((res.marketUpdate.tradesUpdate.trades != null) && (res.marketUpdate.tradesUpdate.trades.length > 0)) {
@@ -87,6 +93,16 @@ class LoggedIn extends React.Component {
                             {this.state.ethPrice}
                             </strong>
                         </mark>
+                    </div>
+                    <br />
+                    <br />
+                    <br />
+                    <hr />
+                </div>
+
+                <div className="col-lg-12">
+                    <div className="container text-center">
+                        <p> UserId: {userId} </p>
                     </div>
                 </div>
             </div>
