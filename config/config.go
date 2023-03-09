@@ -2,6 +2,7 @@ package config
 
 import (
 	"log"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -27,14 +28,31 @@ func LoadConfig() *Config {
 	v.AutomaticEnv()
 	v.AddConfigPath(".")
 
-	if err := v.ReadInConfig(); err != nil {
-		log.Fatalf("Failed to read config %v", err)
+	err := v.ReadInConfig()
+	if err == nil {
+		err := v.Unmarshal(&cfg)
+		if err != nil {
+			panic(err)
+		}
+
+		return cfg
 	}
 
-	err := v.Unmarshal(&cfg)
-	if err != nil {
-		panic(err)
+	log.Printf("Failed to read config %v", err)
+
+	domain := os.Getenv("AUTH0__DOMAIN")
+	clientId := os.Getenv("AUTH0__CLIENT_ID")
+	clientSecret := os.Getenv("AUTH0__CLIENT_SECRET")
+	callbackUrl := os.Getenv("AUTH0__CALLBACK_URL")
+
+	if domain == "" || clientId == "" || clientSecret == "" || callbackUrl == "" {
+		log.Fatal("Missing one or more environment variables!!!")
 	}
+
+	cfg.Auth0.Domain = domain
+	cfg.Auth0.ClientId = clientId
+	cfg.Auth0.ClientSecret = clientSecret
+	cfg.Auth0.CallbackUrl = callbackUrl
 
 	return cfg
 }
