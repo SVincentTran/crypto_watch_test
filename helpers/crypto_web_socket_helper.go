@@ -44,7 +44,6 @@ const APIKEY = "W537CZ928IQU4A0HAM57"
 var update Update
 
 func InitWebSocketClient() (bool, error) {
-	// First initialization of the websocket connection
 	var err error
 	client, _, err := websocket.DefaultDialer.Dial("wss://stream.cryptowat.ch/connect?apikey="+APIKEY, nil)
 	if err != nil {
