@@ -61,5 +61,5 @@ func main() {
 	if port == "" {
 		port = config.Port
 	}
-	router.Run(":%s", port)
+	router.Run(":" + port)
 }

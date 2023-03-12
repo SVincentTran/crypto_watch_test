@@ -7,7 +7,7 @@ class App extends React.Component {
     }
 
     serverRequest() {
-        $.get("http://localhost:3000/api/login-status", res => {
+        $.get(url + "/api/login-status", res => {
             if (res.status == true) {
                 userId = res.user_id
                 this.setState({
@@ -58,10 +58,10 @@ class LoggedIn extends React.Component {
     }
 
     componentDidMount() {
-        $.get("http://localhost:3000/api/login-")
+        $.get(url + "/api/login-status")
 
         const watchUpdateInterval = setInterval(() => {
-            $.get("http://localhost:3000/api/watch", res => {
+            $.get(url + "/api/watch", res => {
                 if ((res.marketUpdate.tradesUpdate.trades != null) && (res.marketUpdate.tradesUpdate.trades.length > 0)) {
                     this.setState({
                         "ethPrice": res.marketUpdate.tradesUpdate.trades[0].priceStr,
