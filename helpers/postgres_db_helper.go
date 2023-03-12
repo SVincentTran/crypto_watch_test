@@ -13,12 +13,12 @@ func InitDBConnection(cfg *config.PostgresqlConfig) (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DB)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		return db, err
+		return nil, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		return db, err
+		return nil, err
 	}
 
 	return db, nil
