@@ -1,0 +1,42 @@
+version: '3.9'
+services:
+  app:
+    container_name: crypto_watch
+    environment:
+      - AUTH0__DOMAIN=${AUTH0__DOMAIN}
+      - AUTH0__CLIENT_ID=${AUTH0__CLIENT_ID}
+      - AUTH0__CLIENT_SECRET=${AUTH0__CLIENT_SECRET}
+      - AUTH0__CALLBACK_URL=${AUTH0__CALLBACK_URL}
+      - POSTGRES__USER=${POSTGRES__USER}
+      - POSTGRES__PASSWORD=${POSTGRES__PASSWORD}
+      - POSTGRES__DB=${POSTGRES__DB}
+      - POSTGRES__HOST=${POSTGRES__HOST}
+      - POSTGRES__PORT=${POSTGRES__PORT}
+    tty: true
+    build: .
+    ports:
+      - 3000:3000
+    restart: on-failure
+    depends_on:
+      - postgresdb
+    networks:
+      - learning
+
+  postgresdb:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      - POSTGRES_USER=${POSTGRES__USER}
+      - POSTGRES_PASSWORD=${POSTGRES__PASSWORD}
+      - POSTGRES_DB=${POSTGRES__DB}
+      - DATABASE_HOST={POSTGRES__HOST}
+    ports:
+      - 1234:5432
+    volumes:
+      - ./create_postgres_table.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - learning
+
+networks:
+  learning:
+    driver: bridge

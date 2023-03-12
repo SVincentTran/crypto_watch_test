@@ -25,7 +25,10 @@ func main() {
 		log.Fatalf("Failed to initialize the authenticator: %v", err)
 	}
 
-	db := helpers.InitDBConnection()
+	db, err := helpers.InitDBConnection(&config.Postgres)
+	if err != nil {
+		log.Printf("Error while initializing DB: %v", err)
+	}
 
 	gob.Register(map[string]interface{}{})
 

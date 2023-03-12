@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	Auth0 Auth0Config `json:"auth0" mapstructure:"auth0"`
+	Auth0    Auth0Config      `json:"auth0" mapstructure:"auth0"`
+	Postgres PostgresqlConfig `json:"postgres" mapstructure:"postgres"`
 }
 
 type Auth0Config struct {
@@ -17,6 +18,14 @@ type Auth0Config struct {
 	ClientId     string `json:"client_id" mapstructure:"client_id"`
 	ClientSecret string `json:"client_secret" mapstructure:"client_secret"`
 	CallbackUrl  string `json:"callback_url" mapstructure:"callback_url"`
+}
+
+type PostgresqlConfig struct {
+	User     string `json:"user" mapstructure:"user"`
+	Password string `json:"password" mapstructure:"password"`
+	DB       string `json:"db" mapstructure:"db"`
+	Host     string `json:"host" mapstructure:"host"`
+	Port     string `json:"port" mapstructure:"port"`
 }
 
 func LoadConfig() *Config {
@@ -45,6 +54,12 @@ func LoadConfig() *Config {
 	clientSecret := os.Getenv("AUTH0__CLIENT_SECRET")
 	callbackUrl := os.Getenv("AUTH0__CALLBACK_URL")
 
+	dbUser := os.Getenv("POSTGRES__USER")
+	dbPassword := os.Getenv("POSTGRES__PASSWORD")
+	dbName := os.Getenv("POSTGRES__DB")
+	dbHost := os.Getenv("POSTGRES__HOST")
+	dbPort := os.Getenv("POSTGRES__PORT")
+
 	if domain == "" || clientId == "" || clientSecret == "" || callbackUrl == "" {
 		log.Fatal("Missing one or more environment variables!!!")
 	}
@@ -53,6 +68,12 @@ func LoadConfig() *Config {
 	cfg.Auth0.ClientId = clientId
 	cfg.Auth0.ClientSecret = clientSecret
 	cfg.Auth0.CallbackUrl = callbackUrl
+
+	cfg.Postgres.User = dbUser
+	cfg.Postgres.Password = dbPassword
+	cfg.Postgres.DB = dbName
+	cfg.Postgres.Host = dbHost
+	cfg.Postgres.Port = dbPort
 
 	return cfg
 }

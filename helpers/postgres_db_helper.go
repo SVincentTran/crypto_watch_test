@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"cryptowatch/config"
 	"database/sql"
 	"fmt"
 	"log"
@@ -8,27 +9,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "123456aA@"
-	dbname   = "crypto_watch"
-)
-
-func InitDBConnection() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+func InitDBConnection(cfg *config.PostgresqlConfig) (*sql.DB, error) {
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DB)
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		return db, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		return db, err
 	}
 
-	return db
+	return db, nil
 }
 
 func GetUser(db *sql.DB, userId string) (bool, error) {

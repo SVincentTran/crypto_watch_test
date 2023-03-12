@@ -49,15 +49,17 @@ func AuthenticationHandler(auth *authenticator.Authenticator, db *sql.DB) gin.Ha
 		}
 
 		// Check for existed user in system
-		isExisted, err := helpers.GetUser(db, profile["nickname"].(string))
-		if err != nil {
-			log.Fatalf("Error while connecting to database %v", err)
-			return
-		}
-		if !isExisted {
-			err := helpers.AddNewUser(db, profile["nickname"].(string))
+		if db != nil {
+			isExisted, err := helpers.GetUser(db, profile["nickname"].(string))
 			if err != nil {
+				log.Fatalf("Error while connecting to database %v", err)
 				return
+			}
+			if !isExisted {
+				err := helpers.AddNewUser(db, profile["nickname"].(string))
+				if err != nil {
+					return
+				}
 			}
 		}
 
