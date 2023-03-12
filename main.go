@@ -10,6 +10,7 @@ import (
 	"encoding/gob"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -56,5 +57,9 @@ func main() {
 
 	// Running a goroutine to handle the web socket subscribtion
 	go helpers.InitWebSocketClient()
-	router.Run(":3000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = config.Port
+	}
+	router.Run(":%s", port)
 }

@@ -9,6 +9,7 @@ import (
 )
 
 type Config struct {
+	Port     string           `json:"port" mapstructure:"port"`
 	Auth0    Auth0Config      `json:"auth0" mapstructure:"auth0"`
 	Postgres PostgresqlConfig `json:"postgres" mapstructure:"postgres"`
 }
@@ -49,6 +50,8 @@ func LoadConfig() *Config {
 
 	log.Printf("Failed to read config %v", err)
 
+	port := os.Getenv("PORT")
+
 	domain := os.Getenv("AUTH0__DOMAIN")
 	clientId := os.Getenv("AUTH0__CLIENT_ID")
 	clientSecret := os.Getenv("AUTH0__CLIENT_SECRET")
@@ -60,9 +63,11 @@ func LoadConfig() *Config {
 	dbHost := os.Getenv("POSTGRES__HOST")
 	dbPort := os.Getenv("POSTGRES__PORT")
 
-	if domain == "" || clientId == "" || clientSecret == "" || callbackUrl == "" {
-		log.Fatal("Missing one or more environment variables!!!")
+	if port == "" || domain == "" || clientId == "" || clientSecret == "" || callbackUrl == "" {
+		log.Fatal("Missing one or more important environment variables!!!")
 	}
+
+	cfg.Port = port
 
 	cfg.Auth0.Domain = domain
 	cfg.Auth0.ClientId = clientId
